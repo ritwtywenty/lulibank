@@ -32,7 +32,7 @@ public class Terminal {
 	public void listener() {
 		LocalDateTime now = LocalDateTime.now();
 		System.out.println(startMessage);
-		System.out.println("lulibank " + LuliUtil.dateFormatter(now) + " #" + banco.contagemDeContas);
+		System.out.println("lulibank " + LuliUtil.dateFormatter(now) + " #" + banco.getContagemDeContas());
 		do {
 			System.out.print("$ ");
 			String commandLine = scanner.nextLine();
@@ -42,8 +42,10 @@ public class Terminal {
 				continue;
 			}
 
-			String reposta = parser.parseFromString(commandLine);
-			System.out.println(reposta + "\n");
+			String resposta = parser.parseFromString(commandLine);
+			if(!resposta.endsWith("\n"))
+				resposta += "\n";
+			System.out.println(resposta);
 		} while (executando);
 	}
 

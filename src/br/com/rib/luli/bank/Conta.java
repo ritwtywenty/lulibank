@@ -1,11 +1,11 @@
 package br.com.rib.luli.bank;
 
 public class Conta {
-	String nome;
-	String senha;
-	float Saldo;
-	float limite;
-	int numero;
+	private String nome;
+	private String senha;
+	private float saldo;
+	private float limite;
+	private int numero;
 	
 	public String getNome() {
 		return nome;
@@ -20,10 +20,10 @@ public class Conta {
 		this.senha = senha;
 	}
 	public float getSaldo() {
-		return Saldo;
+		return saldo;
 	}
 	public void setSaldo(float saldo) {
-		Saldo = saldo;
+		this.saldo = saldo;
 	}
 	public float getLimite() {
 		return limite;
@@ -40,7 +40,7 @@ public class Conta {
 	
 	@Override
 	public String toString() {
-		return "Conta [nome=" + nome + ", senha=" + senha + ", Saldo=" + Saldo + ", limite=" + limite + ", numero="
+		return "Conta [nome=" + nome + ", senha=" + senha + ", Saldo=" + saldo + ", limite=" + limite + ", numero="
 				+ numero + "]" + "\n";
 	}
 }

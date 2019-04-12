@@ -8,14 +8,32 @@ import java.security.NoSuchAlgorithmException;
  * 
  * @author nokhy@outlook.com
  * 
- *         create account name;password -- returns a new account number
+ *         create account name;password -- returns a new account number remove[
+ *         remove account [account id] -- remove account
+ *         account code -- remove an account by code show -- returns a full data
+ *         report help -- returns info about all commands
  */
 public class Parser {
 
-	Banco banco;
+	private String help_msg = "lulibank #\n" + "create account name;password -- returns a new account number\n"
+			+ "show -- returns a full data report\n"
+			+ "help -- returns info about all commands\n"
+			+ "remove account [account id] -- remove account";
+
+	private Banco banco;
 
 	public Parser(Banco banco) {
 		this.banco = banco;
+	}
+
+	private String removeAccount(int id) {
+		for (Conta conta : banco.getClientes()) {
+			if (conta.getNumero() == id) {
+				banco.removeCliente(conta);
+				return "Conta nº: " + id + " removida";
+			}
+		}
+		return "remove account error: account not found";
 	}
 
 	private String createAccount(String name, String password) {
@@ -42,7 +60,7 @@ public class Parser {
 			novaConta.setSenha(messageDigest.digest().toString());
 		else
 			novaConta.setSenha(password);
-		
+
 		banco.addCliente(novaConta);
 
 		return "new account " + novaConta.getNumero();
@@ -66,9 +84,31 @@ public class Parser {
 		}
 	}
 
+	private String remove(String command[]) {
+		if (command.length < 2)
+			return "remove command error: " + command.toString();
+
+		switch (command[1]) {
+		case "account":
+			if (command.length < 3)
+				return "remove account error: " + command.toString();
+
+			int id = -1;
+			try {
+				id = Integer.parseInt(command[2]);
+			} catch (Exception e) {
+				return "remove account error: account code";
+			}
+			return removeAccount(id);
+
+		default:
+			return "comando inválido para create";
+		}
+	}
+
 	private String show() {
 		String buffer = "--- lulibank data #\n";
-		for (Conta conta : banco.clientes) {
+		for (Conta conta : banco.getClientes()) {
 			buffer += conta.toString();
 		}
 		return buffer;
@@ -84,8 +124,14 @@ public class Parser {
 		case "create":
 			return create(command);
 
+		case "remove":
+			return remove(command);
+
 		case "show":
 			return show();
+
+		case "help":
+			return help_msg;
 		default:
 			return "comando não encontrado";
 		}

@@ -1,8 +1,9 @@
-package br.com.rib.luli.bank;
+package br.com.rib.luli.bank.main;
 
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
+import br.com.rib.luli.bank.object.Bank;
 import br.com.rib.luli.util.LuliUtil;
 
 public class Terminal {
@@ -20,11 +21,11 @@ public class Terminal {
 	boolean executando;
 	Parser parser;
 	Scanner scanner;
-	Banco banco;
+	Bank banco;
 
 	public Terminal() {
 		executando = false;
-		banco = new Banco();
+		banco = new Bank();
 		parser = new Parser(banco);
 		scanner = new Scanner(System.in);
 	}

@@ -1,19 +1,21 @@
-package br.com.rib.luli.bank;
+package br.com.rib.luli.bank.object;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Banco {
+public class Bank implements Serializable{
+	private static final long serialVersionUID = -5722236408562309423L;
 	private float imposto;
-	private List<Conta> clientes;
-	private List<Conta> contasDesativadas;
+	private List<Account> clientes;
+	private List<Account> contasDesativadas;
 	private int contagemDeContas;
 
-	public void addCliente(Conta cliente) {
+	public void addCliente(Account cliente) {
 		clientes.add(cliente);
 	}
 
-	public void removeCliente(Conta cliente) {
+	public void removeCliente(Account cliente) {
 		clientes.remove(cliente);
 		contasDesativadas.add(cliente);
 	}
@@ -22,13 +24,13 @@ public class Banco {
 	public String toString() {
 		String armazenaBanco;
 		armazenaBanco = "Banco [imposto=" + imposto + "]\n";
-		for (Conta clienty : clientes) {
+		for (Account clienty : clientes) {
 			armazenaBanco += clienty;
 		}
 		return armazenaBanco;
 	}
 
-	public List<Conta> getClientes() {
+	public List<Account> getClientes() {
 		return clientes;
 	}
 
@@ -44,7 +46,7 @@ public class Banco {
 		this.contagemDeContas = contagemDeContas;
 	}
 
-	public Banco() {
+	public Bank() {
 		contasDesativadas = new ArrayList<>();
 		clientes = new ArrayList<>();
 		imposto = (float) 0.01;

@@ -1,7 +1,11 @@
-package br.com.rib.luli.bank;
+package br.com.rib.luli.bank.main;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import br.com.rib.luli.bank.object.Bank;
+import br.com.rib.luli.bank.persistence.LocalPersistence;
+import br.com.rib.luli.bank.object.Account;
 
 /**
  * This class defines the bank insertion language
@@ -9,27 +13,28 @@ import java.security.NoSuchAlgorithmException;
  * @author nokhy@outlook.com
  * 
  *         create account name;password -- returns a new account number remove[
- *         remove account [account id] -- remove account
- *         account code -- remove an account by code show -- returns a full data
- *         report help -- returns info about all commands
+ *         remove account [account id] -- remove account account code -- remove
+ *         an account by code show -- returns a full data report help -- returns
+ *         info about all commands init -- load default config load default --
+ *         Load from default persistence data save default -- save to default
  */
 public class Parser {
 
 	private String help_msg = "lulibank #\n" + "create account name;password -- returns a new account number\n"
-			+ "show -- returns a full data report\n"
-			+ "help -- returns info about all commands\n"
-			+ "remove account [account id] -- remove account";
+			+ "show -- returns a full data report\n" + "help -- returns info about all commands\n"
+			+ "remove account [account id] -- remove account" + "load default -- Load from default persistence data\r\n"
+			+ "save defualt -- save to default\r\n";
 
-	private Banco banco;
+	private Bank bank;
 
-	public Parser(Banco banco) {
-		this.banco = banco;
+	public Parser(Bank banco) {
+		this.bank = banco;
 	}
 
 	private String removeAccount(int id) {
-		for (Conta conta : banco.getClientes()) {
+		for (Account conta : bank.getClientes()) {
 			if (conta.getNumero() == id) {
-				banco.removeCliente(conta);
+				bank.removeCliente(conta);
 				return "Conta nÂº: " + id + " removida";
 			}
 		}
@@ -52,16 +57,16 @@ public class Parser {
 			System.out.println("Warning, md5 is out");
 		}
 
-		Conta novaConta = new Conta();
+		Account novaConta = new Account();
 		novaConta.setNome(name);
-		novaConta.setNumero(banco.getContagemDeContas());
+		novaConta.setNumero(bank.getContagemDeContas());
 
 		if (messageDigest != null)
 			novaConta.setSenha(messageDigest.digest().toString());
 		else
 			novaConta.setSenha(password);
 
-		banco.addCliente(novaConta);
+		bank.addCliente(novaConta);
 
 		return "new account " + novaConta.getNumero();
 	}
@@ -108,10 +113,32 @@ public class Parser {
 
 	private String show() {
 		String buffer = "--- lulibank data #\n";
-		for (Conta conta : banco.getClientes()) {
+		for (Account conta : bank.getClientes()) {
 			buffer += conta.toString();
 		}
 		return buffer;
+	}
+
+	public String saveFile(String[] command) {
+		if (command.length < 2)
+			return "save command error: " + command.toString();
+
+		if (!command[1].equals("default"))
+			return "não suportado";
+
+		LocalPersistence.saveBank(bank);
+		return "banco salvo";
+	}
+
+	public String loadFile(String[] command) {
+		if (command.length < 2)
+			return "load command error: " + command.toString();
+
+		if (!command[1].equals("default"))
+			return "não suportado";
+
+		bank = LocalPersistence.loadBank();
+		return "novo banco carregado!";
 	}
 
 	public String parseFromString(String string) {
@@ -132,6 +159,17 @@ public class Parser {
 
 		case "help":
 			return help_msg;
+
+		case "save":
+			return saveFile(command);
+
+		case "load":
+			return loadFile(command);
+
+		case "init":
+			LocalPersistence.loadDefaultLuliConfig();
+			return "banco iniciado com configurações padrões";
+
 		default:
 			return "comando nÃ£o encontrado";
 		}

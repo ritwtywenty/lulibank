@@ -1,6 +1,9 @@
-package br.com.rib.luli.bank;
+package br.com.rib.luli.bank.object;
 
-public class Conta {
+import java.io.Serializable;
+
+public class Account implements Serializable{
+	private static final long serialVersionUID = -2092702124700165590L;
 	private String nome;
 	private String senha;
 	private float saldo;

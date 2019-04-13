@@ -10,7 +10,7 @@ public class SimpleMiner implements Miner{
 	private Random random;
 	private Scanner scanner;
 
-	public SimpleMiner(int a) {
+	public SimpleMiner() {
 		random = new Random(System.currentTimeMillis());
 		scanner = new Scanner(System.in);
 	}
@@ -52,5 +52,10 @@ public class SimpleMiner implements Miner{
 		if (newBit == 1) {
 			conta.setSaldo(conta.getSaldo() + 1);
 		}
+	}
+
+	@Override
+	public Miner newInstance() {
+		return new SimpleMiner();
 	}
 }

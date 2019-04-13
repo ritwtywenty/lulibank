@@ -21,7 +21,7 @@ public class LocalPersistence {
 		
 		
 		luliActions = new Properties();
-		luliActions.setProperty("smine", "SimpleMiner");
+		luliActions.setProperty("smine", "br.com.rib.luli.bank.miner.SimpleMiner");
 	}
 
 	public static void saveBank(Bank bank) {

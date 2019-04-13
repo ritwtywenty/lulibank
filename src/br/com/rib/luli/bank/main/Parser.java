@@ -166,9 +166,10 @@ public class Parser {
 			miner = (Miner) Class.forName(actionClass).newInstance();
 			miner.miner(account);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return "Ação não encontrada";
 		}
-		
+		return "Ação executada";
 	}
 
 	public String parseFromString(String string) {

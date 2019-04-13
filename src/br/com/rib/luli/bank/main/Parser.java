@@ -20,10 +20,12 @@ import br.com.rib.luli.bank.object.Account;
  */
 public class Parser {
 
-	private String help_msg = "lulibank #\n" + "create account name;password -- returns a new account number\n"
-			+ "show -- returns a full data report\n" + "help -- returns info about all commands\n"
-			+ "remove account [account id] -- remove account" + "load default -- Load from default persistence data\r\n"
-			+ "save defualt -- save to default\r\n";
+	private String help_msg = "lulibank #\n" + "init -- Inicia as configurações do banco\r\n"
+			+ "create account name;password -- Returns a new account number\n"
+			+ "show -- Returns a full data report\n" + "help -- Returns info about all commands\n"
+			+ "remove account [account id] -- Remove account\n"
+			+ "load default -- Load from default persistence data\r\n"
+			+ "save default -- Save to default\r\n";
 
 	private Bank bank;
 
@@ -35,7 +37,7 @@ public class Parser {
 		for (Account conta : bank.getClientes()) {
 			if (conta.getNumero() == id) {
 				bank.removeCliente(conta);
-				return "Conta nÂº: " + id + " removida";
+				return "Conta nÂº: " + id + " removida.";
 			}
 		}
 		return "remove account error: account not found";

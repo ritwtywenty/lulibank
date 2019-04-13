@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 
 import br.com.rib.luli.bank.object.Bank;
 import br.com.rib.luli.bank.persistence.LocalPersistence;
+import br.com.rib.luli.bank.miner.Miner;
 import br.com.rib.luli.bank.object.Account;
 
 /**
@@ -17,6 +18,7 @@ import br.com.rib.luli.bank.object.Account;
  *         an account by code show -- returns a full data report help -- returns
  *         info about all commands init -- load default config load default --
  *         Load from default persistence data save default -- save to default
+ *         start [action id] to [account id]
  */
 public class Parser {
 
@@ -142,6 +144,32 @@ public class Parser {
 		bank = LocalPersistence.loadBank();
 		return "novo banco carregado!";
 	}
+	
+	public String start(String[] command) {
+		String action = command[1];
+		int accountID = 0;
+		
+		try {
+			accountID = Integer.parseInt(command[3]);
+		}catch(Exception e) {
+			return "Erro no numero da conta";
+		}
+		
+		Account account = bank.getAccountbyID(accountID);
+		
+		if(account == null)
+			return "Conta não encontrada";
+		
+		String actionClass = LocalPersistence.luliActions.getProperty(action);
+		Miner miner;
+		try {
+			miner = (Miner) Class.forName(actionClass).newInstance();
+			miner.miner(account);
+		} catch (Exception e) {
+			return "Ação não encontrada";
+		}
+		
+	}
 
 	public String parseFromString(String string) {
 		if (string.length() < 3)
@@ -167,6 +195,9 @@ public class Parser {
 
 		case "load":
 			return loadFile(command);
+			
+		case "start":
+			return start(command);
 
 		case "init":
 			LocalPersistence.loadDefaultLuliConfig();

@@ -12,10 +12,16 @@ import br.com.rib.luli.bank.object.Bank;
 public class LocalPersistence {
 
 	public static Properties luliConfig;
+	public static Properties luliActions;
 
 	public static void loadDefaultLuliConfig() {
 		luliConfig = new Properties();
 		luliConfig.setProperty("default-local-path", "config/");
+		
+		
+		
+		luliActions = new Properties();
+		luliActions.setProperty("smine", "SimpleMiner");
 	}
 
 	public static void saveBank(Bank bank) {

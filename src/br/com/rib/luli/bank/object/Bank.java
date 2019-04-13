@@ -33,6 +33,14 @@ public class Bank implements Serializable{
 	public List<Account> getClientes() {
 		return clientes;
 	}
+	
+	public Account getAccountbyID(int accountID) {
+		for(Account client : clientes) {
+			if(client.getNumero() == accountID)
+					return client;
+		}
+		return null;
+	}
 
 	public int getContagemDeContas() {
 		return contagemDeContas++;

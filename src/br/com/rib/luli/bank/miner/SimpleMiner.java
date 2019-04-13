@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 import br.com.rib.luli.bank.object.Account;
 
-public class SimpleMiner {
+public class SimpleMiner implements Miner{
 
 	private Random random;
 	private Scanner scanner;

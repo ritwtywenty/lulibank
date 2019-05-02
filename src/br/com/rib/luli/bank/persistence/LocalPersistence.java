@@ -18,8 +18,6 @@ public class LocalPersistence {
 		luliConfig = new Properties();
 		luliConfig.setProperty("default-local-path", "config/");
 		
-		
-		
 		luliActions = new Properties();
 		luliActions.setProperty("smine", "br.com.rib.luli.bank.miner.SimpleMiner");
 	}

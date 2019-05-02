@@ -19,6 +19,7 @@ import br.com.rib.luli.bank.object.Account;
  *         info about all commands init -- load default config load default --
  *         Load from default persistence data save default -- save to default
  *         start [action id] to [account id]
+ *         init -- start lulibank
  */
 public class Parser {
 
@@ -39,7 +40,7 @@ public class Parser {
 		for (Account conta : bank.getClientes()) {
 			if (conta.getNumero() == id) {
 				bank.removeCliente(conta);
-				return "Conta nÂº: " + id + " removida.";
+				return "Conta nº: " + id + " removida.";
 			}
 		}
 		return "remove account error: account not found";
@@ -86,10 +87,13 @@ public class Parser {
 				return "create account error: " + command.toString();
 
 			String accountConfig[] = command[2].split(";");
+			if (accountConfig.length < 2)
+				return "create account password error try: create account name;password";
+			
 			return createAccount(accountConfig[0], accountConfig[1]);
 
 		default:
-			return "comando invÃ¡lido para create";
+			return "comando inválido para create";
 		}
 	}
 
@@ -111,7 +115,7 @@ public class Parser {
 			return removeAccount(id);
 
 		default:
-			return "comando invÃ¡lido para create";
+			return "comando inválido para create";
 		}
 	}
 
@@ -166,7 +170,6 @@ public class Parser {
 			miner = (Miner) Class.forName(actionClass).newInstance();
 			miner.miner(account);
 		} catch (Exception e) {
-			e.printStackTrace();
 			return "Ação não encontrada";
 		}
 		return "Ação executada";
@@ -174,7 +177,7 @@ public class Parser {
 
 	public String parseFromString(String string) {
 		if (string.length() < 3)
-			return "comando invÃ¡lido!";
+			return "comando inválido!";
 
 		String command[] = string.split(" ");
 
@@ -205,7 +208,7 @@ public class Parser {
 			return "banco iniciado com configurações padrões";
 
 		default:
-			return "comando nÃ£o encontrado";
+			return "comando não encontrado";
 		}
 	}
 

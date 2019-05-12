@@ -1,0 +1,15 @@
+
+        _     _        _____      ______  _______ __   _ _     _
+ |      |     | |        |        |_____] |_____| | \  | |____/ 
+ |_____ |_____| |_____ __|__      |_____] |     | |  \_| |    \_
+                                                                
+*****************************************************************
+create account name;password...............create and returns a new account number
+remove account [account id]................remove an account by code
+show.......................................returns a full data report
+help.......................................returns info about all commands
+load default...............................Load from default persistence data (auto)
+save default...............................save to default
+start [action id] to [account id]..........starts a specific job for the account id
+init.......................................start lulibank (auto)
+jobs.......................................lists all the specific jobs

@@ -18,7 +18,7 @@ public class Server {
 		this.bank = bank;
 		parser = new Parser(bank);
 	}
-	
+
 	public Server(Bank bank, Parser parser) {
 		this.bank = bank;
 		this.parser = parser;
@@ -47,11 +47,9 @@ public class Server {
 			System.err.println(e.getMessage());
 		}
 	}
-	
-	private void clearBuffer(byte[] buffer)
-	{
-		for(int i = 0; i < buffer.length; i++)
-		{
+
+	private void clearBuffer(byte[] buffer) {
+		for (int i = 0; i < buffer.length; i++) {
 			buffer[i] = '\0';
 		}
 	}
@@ -60,12 +58,13 @@ public class Server {
 		try {
 			byte readerBuffer[] = new byte[1024 * 1024];
 			String recv = "";
+			Parser clienteParser = new Parser(parser.getBank());
 			do {
 				clearBuffer(readerBuffer);
 				socket.getInputStream().read(readerBuffer);
 				recv = new String(readerBuffer).trim().toLowerCase();
-				System.out.println("new request from "+ socket.getInetAddress().getHostAddress()+" : " + recv);
-				String response = parser.parseFromString(recv);
+				System.out.println("new request from " + socket.getInetAddress().getHostAddress() + " : " + recv);
+				String response = clienteParser.parseFromString(recv);
 				socket.getOutputStream().write(response.getBytes());
 			} while (!recv.equalsIgnoreCase("exit"));
 			socket.close();
@@ -73,8 +72,8 @@ public class Server {
 			System.err.println(e.getMessage());
 		}
 	}
-	
-	public static void main(String[] args) throws Exception{
+
+	public static void main(String[] args) throws Exception {
 		Bank bank = new Bank();
 		Parser parser = new Parser(bank);
 		System.out.println(parser.parseFromString("init"));

@@ -1,39 +1,45 @@
 package br.com.rib.luli.bank.main;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import br.com.rib.luli.bank.object.Bank;
-import br.com.rib.luli.bank.persistence.LocalPersistence;
 import br.com.rib.luli.bank.miner.Miner;
 import br.com.rib.luli.bank.object.Account;
+import br.com.rib.luli.bank.object.Bank;
+import br.com.rib.luli.bank.persistence.LocalPersistence;
 
 /**
  * This class defines the bank insertion language
- * 
- * @author nokhy@outlook.com
- * 
- *         create account name;password -- returns a new account number remove[
- *         remove account [account id] -- remove account account code -- remove
- *         an account by code show -- returns a full data report help -- returns
- *         info about all commands init -- load default config load default --
- *         Load from default persistence data save default -- save to default
- *         start [action id] to [account id]
- *         init -- start lulibank
  */
 public class Parser {
 
-	private String help_msg = "lulibank #\n" + "init -- Inicia as configurações do banco\r\n"
-			+ "create account name;password -- Returns a new account number\n"
-			+ "show -- Returns a full data report\n" + "help -- Returns info about all commands\n"
-			+ "remove account [account id] -- Remove account\n"
-			+ "load default -- Load from default persistence data\r\n"
-			+ "save default -- Save to default\r\n";
+	private String helpMsg;
 
 	private Bank bank;
+	private Miner miner;
 
 	public Parser(Bank banco) {
 		this.bank = banco;
+		loadHelpMsg();
+	}
+
+	private void loadHelpMsg() {
+		try {
+			File helpFile = new File("help.txt");
+			FileReader file = new FileReader(helpFile);
+			BufferedReader br = new BufferedReader(file);
+			String line;
+			while ((line = br.readLine()) != null) {
+				helpMsg += line + "\n";
+			}
+			br.close();
+			file.close();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 	}
 
 	private String removeAccount(int id) {
@@ -76,6 +82,10 @@ public class Parser {
 		return "new account " + novaConta.getNumero();
 	}
 
+	public Bank getBank() {
+		return bank;
+	}
+
 	private String create(String command[]) {
 		if (command.length < 2)
 			return "create command error: " + command.toString();
@@ -89,7 +99,7 @@ public class Parser {
 			String accountConfig[] = command[2].split(";");
 			if (accountConfig.length < 2)
 				return "create account password error try: create account name;password";
-			
+
 			return createAccount(accountConfig[0], accountConfig[1]);
 
 		default:
@@ -148,34 +158,47 @@ public class Parser {
 		bank = LocalPersistence.loadBank();
 		return "novo banco carregado!";
 	}
-	
+
 	public String start(String[] command) {
 		String action = command[1];
 		int accountID = 0;
-		
+
 		try {
 			accountID = Integer.parseInt(command[3]);
-		}catch(Exception e) {
+		} catch (Exception e) {
 			return "Erro no numero da conta";
 		}
-		
+
 		Account account = bank.getAccountbyID(accountID);
-		
-		if(account == null)
+
+		if (account == null)
 			return "Conta não encontrada";
-		
+
 		String actionClass = LocalPersistence.luliActions.getProperty(action);
-		Miner miner;
 		try {
 			miner = (Miner) Class.forName(actionClass).newInstance();
 			miner.miner(account);
+			return miner.onStart();
 		} catch (Exception e) {
 			return "Ação não encontrada";
 		}
-		return "Ação executada";
+	}
+
+	public String listsJobs() {
+		String actions = "Actions:\n";
+		for (Object obj : LocalPersistence.luliActions.keySet()) {
+			actions += (String) obj + "\n";
+		}
+		return actions;
 	}
 
 	public String parseFromString(String string) {
+		try {
+			if (miner.isActive())
+				return miner.onNewAction(string);
+		} catch (NullPointerException e) {
+		}
+
 		if (string.length() < 3)
 			return "comando inválido!";
 
@@ -192,16 +215,22 @@ public class Parser {
 			return show();
 
 		case "help":
-			return help_msg;
+			return helpMsg;
 
 		case "save":
 			return saveFile(command);
 
 		case "load":
 			return loadFile(command);
-			
+
 		case "start":
 			return start(command);
+
+		case "jobs":
+			return listsJobs();
+
+		case "exit":
+			return "server quit " + System.currentTimeMillis();
 
 		case "init":
 			LocalPersistence.loadDefaultLuliConfig();

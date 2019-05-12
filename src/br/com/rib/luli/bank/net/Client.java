@@ -7,7 +7,7 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class Client {
-	
+
 	Scanner scanner;
 	Socket comunication;
 
@@ -16,29 +16,27 @@ public class Client {
 		scanner = new Scanner(System.in);
 		System.out.println("Conectado");
 	}
-	
-	private void clearBuffer(byte[] buffer)
-	{
-		for(int i = 0; i < buffer.length; i++)
-		{
+
+	private void clearBuffer(byte[] buffer) {
+		for (int i = 0; i < buffer.length; i++) {
 			buffer[i] = '\0';
 		}
 	}
-	
-	public void terminalLoop() throws Exception
-	{
+
+	public void terminalLoop() throws Exception {
 		byte readerBuffer[] = new byte[1024 * 1024];
 		String read = "";
-		System.out.print("> ");
 		do {
+			System.out.print("> ");
 			clearBuffer(readerBuffer);
 			read = scanner.nextLine();
 			comunication.getOutputStream().write(read.getBytes());
 			comunication.getInputStream().read(readerBuffer);
-			System.out.println(new String(readerBuffer).trim() + "\n> ");
-		} while(!read.equalsIgnoreCase("exit"));
+			System.out.println(new String(readerBuffer).trim());
+		} while (!read.equalsIgnoreCase("exit"));
+		System.out.println("END#");
 	}
-	
+
 	public static void main(String[] args) throws Exception {
 		Client client = new Client();
 		client.terminalLoop();

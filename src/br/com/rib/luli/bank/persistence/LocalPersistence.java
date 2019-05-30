@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Properties;
 
+import br.com.rib.luli.bank.miner.ClickerMinerControl;
 import br.com.rib.luli.bank.object.Bank;
 
 public class LocalPersistence {
@@ -20,6 +21,9 @@ public class LocalPersistence {
 		
 		luliActions = new Properties();
 		luliActions.setProperty("smine", "br.com.rib.luli.bank.miner.SimpleMiner");
+		luliActions.setProperty("clicker-mine", "br.com.rib.luli.bank.miner.ClikerMiner");
+		
+		ClickerMinerControl.initPriceThings();
 	}
 
 	public static void saveBank(Bank bank) {

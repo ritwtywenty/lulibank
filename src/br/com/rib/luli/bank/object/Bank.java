@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Bank implements Serializable{
+public class Bank implements Serializable {
 	private static final long serialVersionUID = -5722236408562309423L;
 	private float imposto;
 	private List<Account> clientes;
@@ -33,11 +33,22 @@ public class Bank implements Serializable{
 	public List<Account> getClientes() {
 		return clientes;
 	}
-	
-	public Account getAccountbyID(int accountID) {
-		for(Account client : clientes) {
-			if(client.getNumero() == accountID)
-					return client;
+
+	public Account getAccountByName(String name, String md5Password) {
+		for (Account client : clientes) {
+			
+			System.out.println("CMP: " + name + ";" + md5Password + " <--> " + client.getNome() + ";" + client.getSenha());
+			
+			if (client.getNome().equalsIgnoreCase(name) && client.getSenha().equalsIgnoreCase(md5Password))
+				return client;
+		}
+		return null;
+	}
+
+	public Account getAccountByID(int accountID) {
+		for (Account client : clientes) {
+			if (client.getNumero() == accountID)
+				return client;
 		}
 		return null;
 	}

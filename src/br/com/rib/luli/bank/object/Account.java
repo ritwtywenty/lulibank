@@ -2,8 +2,10 @@ package br.com.rib.luli.bank.object;
 
 import java.io.Serializable;
 
-public class Account implements Serializable{
-	private static final long serialVersionUID = -2092702124700165590L;
+import br.com.rib.luli.util.LuliUtil;
+
+public final class Account implements Serializable{
+	private static final long serialVersionUID = 123456789L;
 	private String nome;
 	private String senha;
 	private float saldo;
@@ -20,7 +22,7 @@ public class Account implements Serializable{
 		return senha;
 	}
 	public void setSenha(String senha) {
-		this.senha = senha;
+		this.senha = LuliUtil.encode(senha);
 	}
 	public float getSaldo() {
 		return saldo;

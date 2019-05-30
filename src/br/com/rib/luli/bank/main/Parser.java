@@ -3,13 +3,12 @@ package br.com.rib.luli.bank.main;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 import br.com.rib.luli.bank.miner.Miner;
 import br.com.rib.luli.bank.object.Account;
 import br.com.rib.luli.bank.object.Bank;
 import br.com.rib.luli.bank.persistence.LocalPersistence;
+import br.com.rib.luli.util.LuliUtil;
 
 /**
  * This class defines the bank insertion language
@@ -59,23 +58,10 @@ public class Parser {
 		if (password.length() < 6 || password.length() > 30)
 			return "error, account password is invalid: " + password;
 
-		MessageDigest messageDigest = null;
-
-		try {
-			messageDigest = MessageDigest.getInstance("MD5");
-			messageDigest.update(password.getBytes());
-		} catch (NoSuchAlgorithmException e) {
-			System.out.println("Warning, md5 is out");
-		}
-
 		Account novaConta = new Account();
 		novaConta.setNome(name);
 		novaConta.setNumero(bank.getContagemDeContas());
-
-		if (messageDigest != null)
-			novaConta.setSenha(messageDigest.digest().toString());
-		else
-			novaConta.setSenha(password);
+		novaConta.setSenha(password);
 
 		bank.addCliente(novaConta);
 
@@ -129,12 +115,38 @@ public class Parser {
 		}
 	}
 
-	private String show() {
-		String buffer = "--- lulibank data #\n";
-		for (Account conta : bank.getClientes()) {
-			buffer += conta.toString();
+	private String show(String[] command) {
+
+		try {
+
+			if (command.length <= 1) {
+				String buffer = "--- lulibank data #\n";
+				for (Account conta : bank.getClientes()) {
+					buffer += conta.toString();
+				}
+				return buffer;
+			}
+			
+			String[] accinfo;
+
+			switch (command[1]) {
+			case "account":
+				accinfo = command[2].split(";");
+				return bank.getAccountByName(accinfo[0], LuliUtil.encode(accinfo[1])).toString();
+			
+			case "number":
+				accinfo = command[2].split(";");
+				return "account: " + bank.getAccountByName(accinfo[0], LuliUtil.encode(accinfo[1])).getNumero();
+
+			default:
+				return "Comando inválido";
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace(System.out);
+			System.out.println("...");
+			return "Erro " + e.getMessage();
 		}
-		return buffer;
 	}
 
 	public String saveFile(String[] command) {
@@ -169,7 +181,7 @@ public class Parser {
 			return "Erro no numero da conta";
 		}
 
-		Account account = bank.getAccountbyID(accountID);
+		Account account = bank.getAccountByID(accountID);
 
 		if (account == null)
 			return "Conta não encontrada";
@@ -212,7 +224,7 @@ public class Parser {
 			return remove(command);
 
 		case "show":
-			return show();
+			return show(command);
 
 		case "help":
 			return helpMsg;

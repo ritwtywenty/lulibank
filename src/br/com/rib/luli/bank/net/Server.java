@@ -66,6 +66,7 @@ public class Server {
 				System.out.println("new request from " + socket.getInetAddress().getHostAddress() + " : " + recv);
 				String response = clienteParser.parseFromString(recv);
 				socket.getOutputStream().write(response.getBytes());
+				socket.getOutputStream().flush();
 			} while (!recv.equalsIgnoreCase("exit"));
 			socket.close();
 		} catch (Exception e) {

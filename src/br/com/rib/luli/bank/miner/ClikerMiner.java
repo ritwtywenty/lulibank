@@ -12,7 +12,7 @@ public class ClikerMiner implements Miner {
 
 	@Override
 	public void miner(Account conta) {
-		cmc = new ClickerMinerControl(conta);
+		cmc = new ClickerMinerControl(conta, this);
 		active = true;
 	}
 
